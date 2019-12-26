@@ -18,9 +18,26 @@ namespace MovieDatabase.Pages
             _logger = logger;
         }
 
-        public IActionResult OnGetTestList()
+        public IActionResult OnGetDefaultList()
         {
-            var x = new MovieRepository().GetMultiple();
+            var where = "";
+            var orderBy = "";
+            foreach (var item in Request?.Query)
+            {
+                if (item.Key == "release_date")
+                {
+                    if (where == "") where += $"year(release_date) = '{item.Value}'";
+                    else where += $"and year(release_date) = '{item.Value}'";
+                }
+                /*if (item.Key == "genre")
+                {
+                    if (where == "") where += $"release_date = {item.Value}";
+                    else where += $"and release_date = {item.Value}";
+                }*/
+
+            }
+            
+            var x = new MovieRepository().GetMultiple(where: where);
             var y = JsonConvert.SerializeObject(x);
             var z = Content(y);
             return z;
