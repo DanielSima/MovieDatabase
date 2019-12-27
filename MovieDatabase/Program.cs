@@ -13,7 +13,11 @@ namespace MovieDatabase
     {
         public static void Main(string[] args)
         {
-            //ImportFromTMDB.SaveToDB(ImportFromTMDB.GetMovieIdsByPopularity(100));
+            ImportFromTMDB.SaveMovieToDB(ImportFromTMDB.GetMovieIdsByPopularity(new List<int> { 16 }));
+            foreach (var movie in new MovieRepository().GetMultiple())
+            {
+                ImportFromTMDB.SavePeopleToDB(ImportFromTMDB.GetPersonIdsByMovie(movie.tmdbId), movie.Id);
+            }
 
             CreateHostBuilder(args).Build().Run();
         }

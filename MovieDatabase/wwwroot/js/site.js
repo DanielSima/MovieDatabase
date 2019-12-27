@@ -1,14 +1,14 @@
 ﻿
+//spawn movies
 SpawnMovieList("DefaultList");
+//add onclick to buttons
+
 $(document).ready($(".dropdown-item").click(function () { AddParameter() }));
 $(document).ready($(".btn_seach").click(function () { AddParameter(true) }));
 
+$(document).ready($(".no-attr").unbind("click").bind("click", function () { RemoveParameter() }));
 
 //FUNCTIONS
-function AddOnClick(element, _function) {
-    $(element).click(_function);
-};
-
 /**
  * Adds or changes URL parameter and reloads the page.
  */
@@ -21,6 +21,16 @@ function AddParameter(form = false) {
     }
     var searchParams = new URLSearchParams(window.location.search);
     searchParams.set(key, value);
+    window.location.search = searchParams.toString();
+}
+
+/**
+ * Adds or changes URL parameter and reloads the page.
+ */
+function RemoveParameter() {
+    var key = event.target.getAttribute("data-key");
+    var searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete(key);
     window.location.search = searchParams.toString();
 }
 

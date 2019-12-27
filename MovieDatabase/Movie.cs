@@ -8,6 +8,7 @@ namespace MovieDatabase
 {
     public class Movie : EntityBase
     {
+        public int tmdbId;
         public string title;
         public string description;
         public DateTime releaseDate;
@@ -16,8 +17,9 @@ namespace MovieDatabase
         public string posterPath;
         public int budget;
 
-        public Movie(string title, string description, DateTime releaseDate, int runtime, double rating, string posterPath, int budget)
+        public Movie(int tmdbId, string title, string description, DateTime releaseDate, int runtime, double rating, string posterPath, int budget)
         {
+            this.tmdbId = tmdbId;
             this.title = title;
             this.description = description;
             this.releaseDate = releaseDate;
@@ -27,8 +29,9 @@ namespace MovieDatabase
             this.budget = budget;
         }
 
-        public Movie(int id, string title, string description, DateTime releaseDate, int runtime, double rating, string posterPath, int budget) : base(id)
+        public Movie(int id, int tmdbId, string title, string description, DateTime releaseDate, int runtime, double rating, string posterPath, int budget) : base(id)
         {
+            this.tmdbId = tmdbId;
             this.title = title;
             this.description = description;
             this.releaseDate = releaseDate;
@@ -37,18 +40,6 @@ namespace MovieDatabase
             this.posterPath = posterPath;
             this.budget = budget;
         }
-
-        /*public static void Test()
-        {
-            MovieRepository.GetMovieRepository().Create(new Movie("Iron man", new DateTime(2008, 12, 12)));
-            MovieRepository.GetMovieRepository().Create(new Movie("Doctor strange", new DateTime(2016, 1, 12)));
-            MovieRepository.GetMovieRepository().Create(new Movie("Black Widow", new DateTime(2020, 3, 1)));
-        }*/
-        /*
-        public static List<Movie> movies = new List<Movie> { 
-            new Movie(1, "Iron man", new DateTime(2008, 12, 12)),
-            new Movie(2, "Doctor strange", new DateTime(2016, 1, 12)),
-            new Movie(3, "Black Widow", new DateTime(2020, 3, 1))};*/
     }
 
     public class MovieRepository : IRepository<Movie>
@@ -60,7 +51,7 @@ namespace MovieDatabase
         {
             if (singleton == null)
             {
-                singleton = new MovieRepository(new MSSQL("DESKTOP-I8PHK3E\\MYMSSQLSERVER", "MovieDatabase", "sa", "Password1"));
+                singleton = new MovieRepository(new MSSQL("DESKTOP-I8PHK3E\\MYMSSQLSERVER", "Movie_Database", "sa", "Password1"));
             }
             this.connection = singleton.connection;
         }
@@ -73,8 +64,9 @@ namespace MovieDatabase
         public void Create(Movie entity)
         {
             connection.Execute(
-               $"insert into Movie (title, [description], release_date, runtime, rating, poster_path, budget) " +
+               $"insert into Movie (TMDB_ID, title, [description], release_date, runtime, rating, poster_path, budget) " +
                $"values (" +
+               $"{entity.tmdbId}, " +
                $"'{entity.title}', " +
                $"'{entity.description}', " +
                $"'{entity.releaseDate.ToString("yyyy-MM-dd")}', " +
@@ -95,14 +87,15 @@ namespace MovieDatabase
             try
             {
                 return new Movie(
-                    int.Parse(returnedData[0]), 
-                    returnedData[1], 
+                    int.Parse(returnedData[0]),
+                    int.Parse(returnedData[1]),
                     returnedData[2], 
-                    DateTime.Parse(returnedData[3]), 
-                    int.Parse(returnedData[4]),
-                    double.Parse(returnedData[5]), 
-                    returnedData[6], 
-                    int.Parse(returnedData[7]));
+                    returnedData[3], 
+                    DateTime.Parse(returnedData[4]), 
+                    int.Parse(returnedData[5]),
+                    double.Parse(returnedData[6]), 
+                    returnedData[7], 
+                    int.Parse(returnedData[8]));
             }
             catch (Exception e)
             {
@@ -115,6 +108,7 @@ namespace MovieDatabase
         {
             connection.Execute(
                 $"update movie set " +
+                $"TMDB_ID = {entity.tmdbId}, " +
                 $"title = '{entity.title}', " +
                 $"[description] = '{entity.description}', " +
                 $"release_date = '{entity.releaseDate.ToString("yyyy-MM-dd HH:mm:ss")}', " +
@@ -137,17 +131,18 @@ namespace MovieDatabase
             List<Movie> movies = new List<Movie>();
             try
             {
-                for (int i = 0; i < returnedData.Count; i += 8)
+                for (int i = 0; i < returnedData.Count; i += 9)
                 {
                     movies.Add(new Movie(
                     int.Parse(returnedData[i]),
-                    returnedData[i + 1],
+                    int.Parse(returnedData[i + 1]),
                     returnedData[i + 2],
-                    DateTime.Parse(returnedData[i + 3]),
-                    int.Parse(returnedData[i + 4]),
-                    double.Parse(returnedData[i + 5]),
-                    returnedData[i + 6],
-                    int.Parse(returnedData[i + 7])));
+                    returnedData[i + 3],
+                    DateTime.Parse(returnedData[i + 4]),
+                    int.Parse(returnedData[i + 5]),
+                    double.Parse(returnedData[i + 6]),
+                    returnedData[i + 7],
+                    int.Parse(returnedData[i + 8])));
                 }
                 return movies;
             }

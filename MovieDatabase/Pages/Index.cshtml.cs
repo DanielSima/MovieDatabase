@@ -18,6 +18,9 @@ namespace MovieDatabase.Pages
             _logger = logger;
         }
 
+        /// <summary>
+        /// This method is called by client via HTTP GET and returns list of requested movies from DB.
+        /// </summary>
         public IActionResult OnGetDefaultList()
         {
             var where = "";
