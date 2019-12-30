@@ -67,8 +67,8 @@ namespace MovieDatabase
                $"insert into Movie (TMDB_ID, title, [description], release_date, runtime, rating, poster_path, budget) " +
                $"values (" +
                $"{entity.tmdbId}, " +
-               $"'{entity.title}', " +
-               $"'{entity.description}', " +
+               $"'{entity.title.Replace("'", "''")}', " +
+               $"'{entity.description.Replace("'", "''")}', " +
                $"'{entity.releaseDate.ToString("yyyy-MM-dd")}', " +
                $"{entity.runtime}, " +
                $"{entity.rating}, " +

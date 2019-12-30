@@ -4,8 +4,8 @@
 create table Movie (
 	ID int primary key identity(1,1),
 	TMDB_ID int not null,
-	title nvarchar(64) not null,
-	[description] nvarchar(1024) not null,
+	title nvarchar(256) not null,
+	[description] nvarchar(max) not null,
 	release_date date not null,
 	runtime int not null check(runtime >= 0),
 	rating decimal(2,1) not null check(rating >= 0.0 and rating <= 10.0),
@@ -16,16 +16,16 @@ create table Movie (
 create table Person (
 	ID int primary key identity(1,1),
 	TMDB_ID int not null,
-	[name] nvarchar(64) not null,
+	[name] nvarchar(256) not null,
 	date_of_birth date not null check(date_of_birth < getdate()),
-	place_of_birth varchar(32),
+	place_of_birth varchar(256),
 	gender int not null check(gender >= 0 and gender <= 2),
 	photo_path varchar(128),
 )
 
 create table Actor_Movie (
 	ID int primary key identity(1,1),
-	[character] nvarchar(64) not null,
+	[character] nvarchar(256) not null,
 	person int not null foreign key references Person(ID) on delete cascade,
 	movie int not null foreign key references Movie(ID) on delete cascade,
 )
@@ -51,7 +51,7 @@ create table Genre_Movie (
 create table [Language] (
 	ID int primary key identity(1,1),
 	iso_code varchar(2),
-	[name] varchar(32) not null,
+	[name] nvarchar(64) not null,
 )
 
 create table Language_Movie (
@@ -63,7 +63,7 @@ create table Language_Movie (
 create table Country (
 	ID int primary key identity(1,1),
 	iso_code varchar(2),
-	[name] varchar(32) not null,
+	[name] nvarchar(64) not null,
 )
 
 create table Country_Movie (
@@ -74,9 +74,9 @@ create table Country_Movie (
 
 create table Review (
 	ID int primary key identity(1,1),
-	[description] nvarchar(512) not null,
+	[description] nvarchar(max) not null,
 	date_created date not null default getdate(),
-	author nvarchar(32) not null default 'Anonymous',
+	author nvarchar(124) not null default 'Anonymous',
 	movie int not null foreign key references Movie(ID) on delete cascade,
 )
 
@@ -87,9 +87,9 @@ inner join Director_Movie d on (d.movie = m.ID)
 inner join Genre_Movie gm on (gm.movie = m.ID)
 inner join Genre g on (g.ID = gm.genre)
 inner join Language_Movie lm on (lm.movie = m.ID)
-inner join [Language] l on (l.iso_code = lm.[language])
+inner join [Language] l on (l.ID = lm.[language])
 inner join Country_Movie cm on (cm.movie = m.ID)
-inner join Country c on (c.iso_code = cm.country)
+inner join Country c on (c.ID = cm.country)
 inner join Review r on (r.movie = m.ID)
 where m.id = 1
 

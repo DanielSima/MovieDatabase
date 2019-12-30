@@ -60,9 +60,9 @@ namespace MovieDatabase
                $"insert into Person (TMDB_ID, [name], date_of_birth, place_of_birth, gender, photo_path) " +
                $"values (" +
                $"{entity.tmdbId}, " +
-               $"'{entity.name}', " +
+               $"'{entity.name.Replace("'", "''")}', " +
                $"'{entity.dateOfBirth.ToString("yyyy-MM-dd")}', " +
-               $"'{entity.placeOfBirth}', " +
+               $"'{entity.placeOfBirth.Replace("'", "''")}', " +
                $"{entity.gender}, " +
                $"'{entity.photoPath}');");
         }
@@ -103,40 +103,27 @@ namespace MovieDatabase
                 $"place_of_birth = '{entity.placeOfBirth}', " +
                 $"gender = {entity.gender}, " +
                 $"photo_path = '{entity.photoPath}");
-
         }
-        /*
-        public List<Person> GetMultiple(int amount = 0, string where = "", string orderBy = "")
+
+        public Person GetByName(string name)
         {
-            string query = "select ";
-            if (amount > 0) query += $"top {amount} ";
-            query += "* from Movie ";
-            if (where != "") query += $"where {where} ";
-            if (orderBy != "") query += $"orderby {orderBy} ";
-            query += ";";
-            List<string> returnedData = connection.ExecuteRead(query);
-            List<Movie> movies = new List<Movie>();
+            List<string> returnedData = connection.ExecuteRead($"select * from Person where name='{name.Replace("'", "''")}';");
             try
             {
-                for (int i = 0; i < returnedData.Count; i += 8)
-                {
-                    movies.Add(new Movie(
-                    int.Parse(returnedData[i]),
-                    returnedData[i + 1],
-                    returnedData[i + 2],
-                    DateTime.Parse(returnedData[i + 3]),
-                    int.Parse(returnedData[i + 4]),
-                    double.Parse(returnedData[i + 5]),
-                    returnedData[i + 6],
-                    int.Parse(returnedData[i + 7])));
-                }
-                return movies;
+                return new Person(
+                    int.Parse(returnedData[0]),
+                    int.Parse(returnedData[1]),
+                    returnedData[2],
+                    DateTime.Parse(returnedData[3]),
+                    returnedData[4],
+                    int.Parse(returnedData[5]),
+                    returnedData[6]);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 return null;
             }
-        }*/
+        }
     }
 }

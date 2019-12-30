@@ -12,6 +12,175 @@ namespace MovieDatabase
     /// </summary>
     public static class ImportFromTMDB
     {
+        /// <summary>
+        /// Imports movies, people, and everything else needed.
+        /// Doesn't check for duplicates.
+        /// </summary>
+        /*
+        public static void ImportAll(List<int> pages)
+        {
+            SaveMovieToDB(GetMovieIdsByPopularity(new List<int> { 16 }));
+            foreach (var movie in new MovieRepository().GetMultiple())
+            {
+                SavePeopleToDB(GetPersonIdsByMovie(movie.tmdbId), movie.Id);
+            }
+        }*/
+        ////////////////////////////////////////////////////
+        //Reviews
+
+        /// <summary>
+        /// Saves reviews to my DB.
+        /// </summary>
+        public static void SaveReviewsToDB(Dictionary<string, string> reviews, int movieId)
+        {
+            foreach (var review in reviews)
+            {
+                //check if review exists
+                if (new ReviewRepository().GetByAuthor(review.Key, movieId) == null)
+                    //if not create it
+                    new ReviewRepository().Create(new Review(review.Value, DateTime.Now, review.Key, movieId));
+            }
+        }
+
+        /// <summary>
+        /// Gets reviews from TMDB by movie.
+        /// </summary>
+        public static Dictionary<string, string> GetReviewsByMovie(int tmdbId)
+        {
+            Dictionary<string, string> values = new Dictionary<string, string>();
+            var data = TMDBRequest($"https://api.themoviedb.org/3/movie/{tmdbId}/reviews?api_key=6dc57c84bc4a3872ae46d21b6202e6a1&language=en-US&page=1");
+            //it is apparently not possible to get star rating
+            foreach (var review in data["results"])
+            {
+                values.TryAdd(review["author"].Value<string>(), review["content"].Value<string>());
+            }
+            return values;
+        }
+
+        ////////////////////////////////////////////////////
+        //Countries
+
+        /// <summary>
+        /// Saves countries and their references to my DB.
+        /// </summary>
+        public static void SaveCountriesToDB(Dictionary<string, string> countryIds, int movieId)
+        {
+            foreach (var country in countryIds)
+            {
+                //check if language exists
+                if (new CountryRepository().GetByName(country.Value) == null)
+                    //if not create it
+                    new CountryRepository().Create(new Country(country.Key, country.Value));
+
+                //create Genre_movie relation
+                new CountryMovieRepository().Create(
+                    new CountryMovie(new CountryRepository().GetByName(country.Value).Id, movieId));
+            }
+        }
+
+        /// <summary>
+        /// Gets countries from TMDB by movie.
+        /// </summary>
+        public static Dictionary<string, string> GetCountriesByMovie(int tmdbId)
+        {
+            Dictionary<string, string> values = new Dictionary<string, string>();
+            var data = TMDBRequest($"https://api.themoviedb.org/3/movie/{tmdbId}?&language=en-US&api_key=6dc57c84bc4a3872ae46d21b6202e6a1");
+            foreach (var language in data["production_countries"])
+            {
+                values.Add(language["iso_3166_1"].Value<string>(), language["name"].Value<string>());
+            }
+            return values;
+        }
+
+
+        ////////////////////////////////////////////////////
+        //Languages
+
+        /// <summary>
+        /// Saves languages and their references to my DB.
+        /// </summary>
+        public static void SaveLanguagesToDB(Dictionary<string, string> languageIds, int movieId)
+        {
+            foreach (var language in languageIds)
+            {
+                //check if language exists
+                if (new LanguageRepository().GetByName(language.Value) == null)
+                    //if not create it
+                    new LanguageRepository().Create(new Language(language.Key, language.Value));
+
+                //create Genre_movie relation
+                new LanguageMovieRepository().Create(
+                    new LanguageMovie(new LanguageRepository().GetByName(language.Value).Id, movieId));
+            }
+        }
+
+        /// <summary>
+        /// Gets languages from TMDB by movie.
+        /// </summary>
+        public static Dictionary<string,string> GetLanguagesByMovie(int tmdbId)
+        {
+            Dictionary<string, string> values = new Dictionary<string, string>();
+            var data = TMDBRequest($"https://api.themoviedb.org/3/movie/{tmdbId}?&language=en-US&api_key=6dc57c84bc4a3872ae46d21b6202e6a1"); 
+            foreach (var language in data["spoken_languages"])
+            {
+                values.Add(language["iso_639_1"].Value<string>(), language["name"].Value<string>());
+            }
+            return values;
+        }
+
+        ////////////////////////////////////////////////////
+        //Genres
+
+        /// <summary>
+        /// Saves genres and their references to my DB.
+        /// </summary>
+        public static void SaveGenresToDB(List<int> genreIds, int movieId)
+        {
+            foreach (var genreId in genreIds)
+            {
+                string genre = GetGenreTitle(genreId);
+                //check if genre exists
+                if (new GenreRepository().GetByName(genre) == null)
+                    //if not create it
+                    new GenreRepository().Create(new Genre(genreId, genre));
+
+                //create Genre_movie relation
+                new GenreMovieRepository().Create(
+                    new GenreMovie(new GenreRepository().GetByName(genre).Id, movieId));
+            }
+        }
+
+        /// <summary>
+        /// Gets genre ids from TMDB by movie.
+        /// </summary>
+        public static List<int> GetGenreIdsByMovie(int tmbdId)
+        {
+            List<int> ids = new List<int>();
+
+            var data = TMDBRequest($"https://api.themoviedb.org/3/movie/{tmbdId}?&language=en-US&api_key=6dc57c84bc4a3872ae46d21b6202e6a1");
+
+            //save directors
+            foreach (var genre in data["genres"])
+            {
+                    ids.Add(genre["id"].Value<int>());
+            }
+            return ids;
+        }
+
+        /// <summary>
+        /// Gets genre title.
+        /// </summary>
+        public static string GetGenreTitle(int tmdbId)
+        {
+            var data = TMDBRequest($"https://api.themoviedb.org/3/genre/movie/list?api_key=6dc57c84bc4a3872ae46d21b6202e6a1&language=en-US");
+            foreach (var genre in data["genres"])
+            {
+                if(genre["id"].Value<int>() == tmdbId)
+                    return genre["name"].Value<string>();
+            }
+            return "";
+        }
+
         ////////////////////////////////////////////////////
         //People
 
@@ -22,30 +191,31 @@ namespace MovieDatabase
         {
             foreach (var person in peopleIds)
             {
+                //get person info from TMBD
                 List<string> receivedAttributes = GetPersonAttributes(person.Key,
                     new List<string> { "id", "name", "birthday", "place_of_birth", "gender", "profile_path" });
                 int tmdbId = int.Parse(receivedAttributes[0]);
-                string name = receivedAttributes[1].Replace("'", "''");
-                DateTime dayOfBirth = DateTime.Parse(receivedAttributes[2]);
-                string placeOfBirth = receivedAttributes[3];
-                int gender = int.Parse(receivedAttributes[4]);
+                string name = receivedAttributes[1];
+                DateTime dayOfBirth = DateTime.Parse(receivedAttributes[2] ?? "1970-01-01"); //feels like cheating
+                string placeOfBirth = receivedAttributes[3] ?? "";
+                int gender = int.Parse(receivedAttributes[4]) > 2 ? 0 : int.Parse(receivedAttributes[4]);//somebody had 3 even though official documentation says 0 to 2 ???
                 string photoPath = receivedAttributes[5];
+                //check if person exists
+                if(new PersonRepository().GetByName(name) == null)
+                    //if not create him/her/?
+                    new PersonRepository().Create(new Person(tmdbId, name, dayOfBirth, placeOfBirth, gender, photoPath));
 
-                new PersonRepository().Create(new Person(tmdbId, name, dayOfBirth, placeOfBirth, gender, photoPath));
+                //create either Director_movie or Actor_move relation
                 if(person.Value == "Director")
                 {
-                    new DirectorMovieRepository().Create(new DirectorMovie(
-                        new PersonRepository().GetByName(name).Id,
-                        movieId));
+                    new DirectorMovieRepository().Create(
+                        new DirectorMovie(new PersonRepository().GetByName(name).Id, movieId));
                 }
                 else
                 {
-                    new ActorMovieRepository().Create(new ActorMovie(
-                        person.Value,
-                        new PersonRepository().GetByName(name).Id,
-                        movieId));
+                    new ActorMovieRepository().Create(
+                        new ActorMovie(person.Value, new PersonRepository().GetByName(name).Id, movieId));
                 }
-
             }
         }
 
@@ -58,19 +228,23 @@ namespace MovieDatabase
 
             var data = TMDBRequest($"https://api.themoviedb.org/3/movie/{tmbdId}?&language=en-US&api_key=6dc57c84bc4a3872ae46d21b6202e6a1" +
                 $"&append_to_response=credits");
-
-            foreach (var person in data["results"]["cast"])
+           
+            //save directors
+            foreach (var person in data["credits"]["crew"])
             {
-                //save directors
-                if(person["job"].Value<string>() == "Director")
+                if (person["job"].Value<string>() == "Director")
                 {
                     ids.Add(person["id"].Value<int>(), "Director");
                 }
-                //and top 10 actors
-                else if(person["order"].Value<int>() <= 10)
+            }
+            //and top 10 actors
+            foreach (var person in data["credits"]["cast"])
+            {
+                if (person["order"].Value<int>() < 10)
                 {
-                    ids.Add(person["id"].Value<int>(), person["character"].Value<string>());
+                    ids.TryAdd(person["id"].Value<int>(), person["character"].Value<string>());
                 }
+
             }
             return ids;
         }
@@ -102,8 +276,8 @@ namespace MovieDatabase
                 List<string> receivedAttributes = GetMovieAttributes(movie,
                     new List<string> { "id", "title", "overview", "release_date", "runtime", "vote_average", "poster_path", "budget" });
                 int tmdbId = int.Parse(receivedAttributes[0]);
-                string title = receivedAttributes[1].Replace("'", "''");
-                string description = receivedAttributes[2].Replace("'", "''");
+                string title = receivedAttributes[1];
+                string description = receivedAttributes[2];
                 DateTime relaseDate = DateTime.Parse(receivedAttributes[3]);
                 int runtime = int.Parse(receivedAttributes[4]);
                 double rating = double.Parse(receivedAttributes[5]);
@@ -130,8 +304,6 @@ namespace MovieDatabase
                 {
                     ids.Add(movie["id"].Value<int>());
                 }
-                //api is limited to 4 requests per second
-                Thread.Sleep(260);
             }
             return ids;
         }
@@ -157,6 +329,8 @@ namespace MovieDatabase
         /// </summary>
         public static JObject TMDBRequest(string url)
         {
+            //this is bad
+            Thread.Sleep(260);
             var client = new RestClient(url);
             var request = new RestRequest(Method.GET);
             request.AddParameter("undefined", "{}", ParameterType.RequestBody);
