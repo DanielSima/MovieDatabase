@@ -94,13 +94,24 @@ inner join Review r on (r.movie = m.ID)
 where m.id = 1
 
 go
-create procedure mp_movies_by_genre @genre varchar(32)
-as begin
-	select m.ID from Movie m
-	inner join Genre_Movie gm on (gm.movie = m.ID)
-	inner join Genre g on (gm.genre = g.ID)
-	where g.title = @genre;
-end
+create procedure mp_get_movies
+	@title varchar(32),
+	@genre varchar(32),
+	@year varchar(32),
+	@orderby varchar(32)
+	as begin
+    select m.ID, m.TMDB_ID, m.title, m.[description], m.release_date, m.runtime, m.rating, m.poster_path, m.budget from Movie m
+		inner join Genre_Movie gm on (gm.movie = m.ID)
+		inner join Genre g on (gm.genre = g.ID)
+		where 
+		m.title like @title and
+		g.title like @genre and 
+		year(m.release_date) like @year
+		group by m.ID, m.TMDB_ID, m.title, m.[description], m.release_date, m.runtime, m.rating, m.poster_path, m.budget
+		order by 
+		    case when @orderby = 'm.title' then m.title end asc,
+            case when @orderby = 'm.release_date' then m.release_date end desc
+	end
 
 go
 create procedure mp_movie_info_array @movie_id int, @array_name varchar(32)
