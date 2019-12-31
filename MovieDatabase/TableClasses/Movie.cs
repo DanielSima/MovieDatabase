@@ -152,5 +152,40 @@ namespace MovieDatabase
                 return null;
             }
         }
+
+        public List<Movie> ExecuteProcedure(string name, List<string> variables)
+        {
+            string query = $"execute {name}";
+            for(int i = 0; i < variables.Count; i++)
+            {
+                query += $" {variables[i]}";
+                if(i + 1 < variables.Count)
+                    query += ",";
+            }
+            List<string> returnedData = connection.ExecuteRead(query);
+            List<Movie> movies = new List<Movie>();
+            try
+            {
+                for (int i = 0; i < returnedData.Count; i += 9)
+                {
+                    movies.Add(new Movie(
+                    int.Parse(returnedData[i]),
+                    int.Parse(returnedData[i + 1]),
+                    returnedData[i + 2],
+                    returnedData[i + 3],
+                    DateTime.Parse(returnedData[i + 4]),
+                    int.Parse(returnedData[i + 5]),
+                    double.Parse(returnedData[i + 6]),
+                    returnedData[i + 7],
+                    int.Parse(returnedData[i + 8])));
+                }
+                return movies;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace MovieDatabase
     {
         public static void Main(string[] args)
         {
-            ImportFromTMDB.SaveMovieToDB(ImportFromTMDB.GetMovieIdsByPopularity(new List<int> { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 }));
+            /*ImportFromTMDB.SaveMovieToDB(ImportFromTMDB.GetMovieIdsByPopularity(new List<int> { 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 }));
             foreach (var movie in new MovieRepository().GetMultiple())
             {
                 ImportFromTMDB.SavePeopleToDB(ImportFromTMDB.GetPersonIdsByMovie(movie.tmdbId), movie.Id);
@@ -21,7 +21,7 @@ namespace MovieDatabase
                 ImportFromTMDB.SaveLanguagesToDB(ImportFromTMDB.GetLanguagesByMovie(movie.tmdbId), movie.Id);
                 ImportFromTMDB.SaveCountriesToDB(ImportFromTMDB.GetCountriesByMovie(movie.tmdbId), movie.Id);
                 ImportFromTMDB.SaveReviewsToDB(ImportFromTMDB.GetReviewsByMovie(movie.tmdbId), movie.Id);
-            }
+            }*/
 
             CreateHostBuilder(args).Build().Run();
         }

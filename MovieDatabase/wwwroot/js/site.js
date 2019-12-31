@@ -8,6 +8,10 @@ $(document).ready($(".btn_seach").click(function () { AddParameter(true) }));
 
 $(document).ready($(".no-attr").unbind("click").bind("click", function () { RemoveParameter() }));
 
+
+//$(document).ready($(".list_child").click(function () { OpenMovie() }));
+
+
 //FUNCTIONS
 /**
  * Adds or changes URL parameter and reloads the page.
@@ -35,9 +39,17 @@ function RemoveParameter() {
 }
 
 /**
+ * Opens movie page with title as parameter.
+ */
+function OpenMovie() {
+    var movieTitle = event.currentTarget.children[1].innerHTML; 
+    window.location.href = window.location.origin + "/movie?title=" + movieTitle;
+}
+
+/**
  * Requests movies from DB, then spawns them on list page.
  */
-function SpawnMovieList(handler = DefaultList) {
+function SpawnMovieList(handler = "DefaultList") {
     $.ajax({
         type: "GET",
         url: '/Index?handler=' + handler,
@@ -45,12 +57,14 @@ function SpawnMovieList(handler = DefaultList) {
         contentType: "application/json; charset=utf-8",
         dataType: "json"
     }).done(function (data) {
-        //remove spinner
-        document.getElementById("spinner").parentNode.removeChild(spinner);
         //spawn movies
         for (i = 0; i < data.length; i++) {
             createMovieListChild(data[i].title, new Date(data[i].releaseDate).getFullYear(), data[i].rating, data[i].posterPath)
         }
+        //add onclick
+        $(".list_child").click(function () { OpenMovie() })
+        //remove spinner
+        document.getElementById("spinner").parentNode.removeChild(spinner);
     }).fail(function (jqXHR, textStatus) {
         document.getElementById("spinner").innerHTML = textStatus;
     })
@@ -66,6 +80,20 @@ function createMovieListChild(title, year, rating, poster_url) {
             '<h6 class="inline text-muted">' + year + '</h6>',
             '<h6 class="inline text-muted float-right">&#9733 ' + rating + '</h6>',
             '</div>'].join('\n');
+    var parent = document.getElementById('list_parent');
+    parent.insertAdjacentHTML('beforeend', html);
+}
+
+/**
+ * Creates HTML for movie on movie page.
+ */
+function createMovie() {
+    var html = ['<div class="list_child">',
+        '<img class="list_poster img-fluid" alt="Responsive image" ', 'src="http://image.tmdb.org/t/p/w500//' + poster_url + '">',
+        '<h5 class="list_poster_h1 text-truncate">' + title + '</h5>',
+        '<h6 class="inline text-muted">' + year + '</h6>',
+        '<h6 class="inline text-muted float-right">&#9733 ' + rating + '</h6>',
+        '</div>'].join('\n');
     var parent = document.getElementById('list_parent');
     parent.insertAdjacentHTML('beforeend', html);
 }

@@ -23,27 +23,18 @@ namespace MovieDatabase.Pages
         /// </summary>
         public IActionResult OnGetDefaultList()
         {
-            var where = "";
-            var orderBy = "";
-            foreach (var item in Request?.Query)
-            {
-                if (item.Key == "release_date")
-                {
-                    if (where == "") where += $"year(release_date) = '{item.Value}'";
-                    else where += $"and year(release_date) = '{item.Value}'";
-                }
-                /*if (item.Key == "genre")
-                {
-                    if (where == "") where += $"release_date = {item.Value}";
-                    else where += $"and release_date = {item.Value}";
-                }*/
-
-            }
+            List<string> procedureParameters = new List<string>();
             
-            var x = new MovieRepository().GetMultiple(where: where);
-            var y = JsonConvert.SerializeObject(x);
-            var z = Content(y);
-            return z;
+            procedureParameters.Add($"@title = '{(Request.Query.ContainsKey("title") ? "%" + Request.Query["title"].ToString() + "%" : "%")}'");
+            procedureParameters.Add($"@year = '{(Request.Query.ContainsKey("release_date") ? Request.Query["release_date"].ToString() : "%" )}'");
+            procedureParameters.Add($"@genre = '{(Request.Query.ContainsKey("genre") ? Request.Query["genre"].ToString() : "%")}'");
+            procedureParameters.Add($"@orderby = '{(Request.Query.ContainsKey("orderby") ? Request.Query["orderby"].ToString() : "m.title")}'");
+
+            var requestedMovies = new MovieRepository().ExecuteProcedure("mp_get_movies", procedureParameters);
+
+            var requestedMoviesSerialized = JsonConvert.SerializeObject(requestedMovies);
+            var requestedMoviesContent = Content(requestedMoviesSerialized);
+            return requestedMoviesContent;
         }
 
         public void OnPost()

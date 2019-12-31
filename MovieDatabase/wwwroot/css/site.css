@@ -41,6 +41,10 @@ html {
     box-shadow: 10px 10px 35px -6px rgba(0, 0, 0, 1);
 }
 
+.list_child:hover .list_poster {
+    transform: scale(1.1);
+}
+
 @media only screen and (max-width: 936px) {
     .list_child {
         width: calc(500 / 4.5 * 1px);
@@ -109,6 +113,10 @@ html {
 
 .dropdown-item:hover {
     background-color: #0d0d0d !important;
+}
+
+#spinner {
+    background-color: #ffffff !important;
 }
 
 
