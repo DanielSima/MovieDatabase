@@ -99,65 +99,71 @@ create procedure mp_get_movies
 	@genre varchar(32),
 	@year varchar(32),
 	@orderby varchar(32)
-	as begin
-    select m.ID, m.TMDB_ID, m.title, m.[description], m.release_date, m.runtime, m.rating, m.poster_path, m.budget from Movie m
-		inner join Genre_Movie gm on (gm.movie = m.ID)
-		inner join Genre g on (gm.genre = g.ID)
-		where 
+as begin
+	select m.ID, m.TMDB_ID, m.title, m.[description], m.release_date, m.runtime, m.rating, m.poster_path, m.budget from Movie m
+	inner join Genre_Movie gm on (gm.movie = m.ID)
+	inner join Genre g on (gm.genre = g.ID)
+	where 
 		m.title like @title and
 		g.title like @genre and 
 		year(m.release_date) like @year
-		group by m.ID, m.TMDB_ID, m.title, m.[description], m.release_date, m.runtime, m.rating, m.poster_path, m.budget
-		order by 
-		    case when @orderby = 'm.title' then m.title end asc,
-            case when @orderby = 'm.release_date' then m.release_date end desc
-	end
+	group by m.ID, m.TMDB_ID, m.title, m.[description], m.release_date, m.runtime, m.rating, m.poster_path, m.budget
+	order by 
+		case when @orderby = 'm.title' then m.title end asc,
+		case when @orderby = 'm.release_date' then m.release_date end desc
+end
 
 go
-create procedure mp_movie_info_array @movie_id int, @array_name varchar(32)
+create procedure mp_movie_info_array @movie_title nvarchar(256), @array_name varchar(32)
 as begin
+	if @array_name = 'movie'
+	begin
+		select title, [description], release_date, runtime, rating, poster_path, budget from movie m
+		where m.title = @movie_title
+	end
 	if @array_name = 'actor'
 	begin
-		select * from person p
+		select p.* from person p
 		inner join Actor_Movie am on (am.person = p.ID)
 		inner join Movie m on (am.movie = m.ID)
-		where m.ID = @movie_id
+		where m.title = @movie_title
 	end
 	if @array_name = 'director'
 	begin
 		select * from person p
 		inner join Director_Movie dm on (dm.person = p.ID)
 		inner join Movie m on (dm.movie = m.ID)
-		where m.ID = @movie_id
+		where m.title = @movie_title
 	end
 	if @array_name = 'genre'
 	begin
 		select * from genre g
 		inner join Genre_Movie gm on (gm.genre = g.ID)
 		inner join Movie m on (gm.movie = m.ID)
-		where m.ID = @movie_id
+		where m.title = @movie_title
 	end
 	if @array_name = 'language'
 	begin
 		select * from [Language] l
 		inner join Language_Movie lm on (lm.[language] = l.ID)
 		inner join Movie m on (lm.movie = m.ID)
-		where m.ID = @movie_id
+		where m.title = @movie_title
 	end
 	if @array_name = 'country'
 	begin
 		select * from Country c
 		inner join Country_Movie cm on (cm.country = c.ID)
 		inner join Movie m on (cm.movie = m.ID)
-		where m.ID = @movie_id
+		where m.title = @movie_title
 	end
 	if @array_name = 'review'
 	begin
 		select * from Review r
-		where r.movie = @movie_id
+		where r.movie = (select ID from movie where title = @movie_title)
 	end
 	else
 	begin
 		print 'not supported'
 	end
 end
+

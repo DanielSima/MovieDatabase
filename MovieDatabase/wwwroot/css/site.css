@@ -5,7 +5,7 @@ html {
     margin: 0;
 }
 
-.list{
+.list {
     margin: 0 5% 0 5%;
 }
 
@@ -26,7 +26,7 @@ html {
 
 
 .list_poster_h1 {
-    padding-top: 1rem;
+    margin-top: 1rem;
 }
 
 .inline {
@@ -52,7 +52,8 @@ html {
     }
 
     .list {
-        padding: 0 2% 0 2%;
+        padding: 0;
+        margin: 0;
     }
 }
 
@@ -95,21 +96,21 @@ html {
     padding: 0 2rem;
 }
 
-.btn_seach{
+.btn_seach {
     background-color: transparent !important;
     padding: 0 1rem !important;
 }
 
-.form-control{
+.form-control {
     border: 0 !important;
     background-color: #b51923 !important;
     border-radius: 0 !important;
     color: white !important;
 }
 
-.form-control::-webkit-input-placeholder {
-  color: white !important;
-}
+    .form-control::-webkit-input-placeholder {
+        color: white !important;
+    }
 
 .dropdown-item:hover {
     background-color: #0d0d0d !important;
@@ -119,6 +120,80 @@ html {
     background-color: #ffffff !important;
 }
 
+/*The movie page*/
+.movie-parent {
+    display: flex;
+    height: auto;
+    justify-content: center;
+    align-items: flex-start;
+    flex-flow: row wrap;
+}
+
+.movie-poster {
+    /*500 is poster width*/
+    width: calc(500 / 1.6 * 1px);
+    height: auto;
+    margin: 60px;
+}
+
+.movie-text {
+    /*500 is poster width*/
+    box-sizing: border-box;
+    width: calc(90vw - (500 / 1.6 * 1px) - 120px);
+    height: auto;
+    padding: 60px;
+}
+
+.movie-title {
+    font-size: 2.5rem;
+    margin: 60px 30px 0px 30px;
+}
+
+.movie-small {
+    font-size: 120%;
+    margin: 20px 30px;
+}
+
+.movie-genre {
+    margin: 20px 20px 0 30px;
+    font-size: 100%;
+}
+.movie-star {
+    margin: 0 20px;
+    font-size: 100%;
+}
+@media only screen and (max-width: 936px) {
+    .movie-text {
+        width: 100vw;
+        padding: 15px;
+    }
+
+    .movie-title {
+        padding: 0;
+    }
+}
+
+.actor-list{
+    margin: 0 60px;
+}
+
+.actor {
+    width: calc(500 / 1.6 * 1px + 80px);
+    height: auto;
+    margin: 40px;
+}
+
+.actor-poster {
+    width: calc(500 / 2 * 1px);
+    height: auto;
+}
+
+.actor-text {
+    font-size: 150%;
+    margin-top: 1.5rem;
+    margin-bottom: 0 ;
+    padding: 0;
+}
 
 /* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
@@ -130,7 +205,7 @@ a.navbar-brand {
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #0366d6;
 }
 
 /*.btn-primary {
@@ -142,53 +217,56 @@ a {
 }*/
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
+
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .border-top {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
 }
+
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
 }

@@ -36,10 +36,5 @@ namespace MovieDatabase.Pages
             var requestedMoviesContent = Content(requestedMoviesSerialized);
             return requestedMoviesContent;
         }
-
-        public void OnPost()
-        {
-            //Movie.Test();
-        }
     }
 }
