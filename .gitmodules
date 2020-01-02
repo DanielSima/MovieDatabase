@@ -1,6 +1,3 @@
-[submodule "DBConnect"]
-	path = client/DBConnect
-	url = https://github.com/DanielSima/Database-connection.git
 [submodule "client/DBConnect"]
 	path = client/DBConnect
 	url = https://github.com/DanielSima/Database-connection.git
