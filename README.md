@@ -1,6 +1,6 @@
 ﻿# MovieDatabase
 
-Client, server application for movies.
+Client-server application for movies.
 Using Microsoft SQL Server together with .NET Razor pages.
 
 ![Video](/media/video.gif)
