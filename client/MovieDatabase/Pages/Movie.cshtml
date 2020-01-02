@@ -1,0 +1,37 @@
+﻿@page
+@model MovieDatabase.MovieModel
+@{
+    ViewData["Title"] = "Movie";
+}
+
+<div id="parent">
+    <div class="movie-parent">
+        <!-- movie info -->
+        <img class="movie-poster list_poster img-fluid" alt="Responsive image" src="" />
+        <div class="movie-text">
+            <h1 class="movie-title">Loading</h1>
+            <h1 class="movie-small movie-genre inline"></h1>
+            <h1 class="movie-small movie-star inline"></h1>
+            <p class="movie-small"></p>
+            <span class="font-italic movie-above">Released: </span>
+            <p class="movie-small"></p>
+            <span class="font-italic movie-above">Runtime: </span>
+            <p class="movie-small"></p>
+            <span class="font-italic movie-above">Budget: </span>
+            <p class="movie-small"></p>
+            <span class="font-italic movie-above">Directed by: </span>
+            <p class="movie-small"></p>
+        </div>
+        <!-- end movie info -->
+    </div>
+    <!-- cast -->
+    <h1 class="movie-title">Cast</h1>
+    <div class="actor-list" id="actor-list">
+    </div>
+    <!-- end cast -->
+    <!-- reviews -->
+    <h1 class="movie-title">Reviews</h1>
+    <div class="review-list" id="review-list">
+    </div>
+    <!-- end reviews -->
+</div>

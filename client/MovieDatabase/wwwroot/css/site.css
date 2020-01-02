@@ -1,0 +1,295 @@
+﻿/*CSS is a mess, don't recommend trying to understand*/
+
+*,
+html {
+    background-color: #212121 !important;
+    color: #f2f2f2 !important;
+    margin: 0;
+}
+
+.list {
+    margin: 0 5% 0 5%;
+}
+
+/*The index page list*/
+.list_parent {
+    display: flex;
+    height: auto;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+.list_child {
+    /*500 is poster width*/
+    width: calc(500 / 2.5 * 1px);
+    height: auto;
+    margin: 40px;
+}
+
+.list_poster_h1 {
+    margin-top: 1rem;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.list_poster {
+    /*width: calc(500 / 2 * 1px) !important;
+    height: calc(750 / 2 * 1px) !important;*/
+    border-radius: 15px;
+    box-shadow: 10px 10px 35px -6px rgba(0, 0, 0, 1);
+}
+
+.list_child:hover .list_poster {
+    transform: scale(1.1);
+}
+
+@media only screen and (max-width: 936px) {
+    .list_child {
+        width: calc(500 / 4.5 * 1px);
+        margin: 20px;
+    }
+
+    .list {
+        padding: 0;
+        margin: 0;
+    }
+}
+
+/*The index page header*/
+.index_header {
+    padding: 2rem
+}
+
+.index_h1 {
+    font-size: 4rem;
+    margin: 2rem
+}
+
+.btn_red {
+    background-color: #dc1623 !important;
+    border-radius: 1000px !important;
+    padding: 0.7rem 2rem 0.7rem 2rem !important;
+    font-size: 1.3rem !important;
+    border: 0 !important;
+}
+
+.options_parent {
+    display: flex;
+    height: auto;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+}
+
+.options_child {
+    /*500 is poster width*/
+    margin: 10px 2rem;
+}
+
+.search_red {
+    background-color: #dc1623 !important;
+    border-radius: 1000px !important;
+    font-size: 1.3rem !important;
+    border: 0 !important;
+    height: 53.375px;
+    padding: 0 2rem;
+}
+
+.btn_seach {
+    background-color: transparent !important;
+    padding: 0 1rem !important;
+}
+
+.form-control {
+    border: 0 !important;
+    background-color: #b51923 !important;
+    border-radius: 0 !important;
+    color: white !important;
+}
+
+    .form-control::-webkit-input-placeholder {
+        color: white !important;
+    }
+
+.dropdown-item:hover {
+    background-color: #0d0d0d !important;
+}
+
+#spinner {
+    background-color: #ffffff !important;
+}
+
+/*The movie page*/
+.movie-parent {
+    display: flex;
+    height: auto;
+    justify-content: center;
+    align-items: flex-start;
+    flex-flow: row wrap;
+}
+
+.movie-poster {
+    width: calc(500 / 1.6 * 1px);
+    height: auto;
+    margin: 60px;
+}
+
+.movie-text {
+    box-sizing: border-box;
+    width: calc(70vw - (500 / 1.6 * 1px) - 120px);
+    height: auto;
+    padding: 60px;
+}
+
+.movie-title {
+    font-size: 2.5rem;
+    margin: 0 30px 0px 30px;
+}
+
+.movie-small {
+    font-size: 120%;
+    margin: 0 30px 20px 30px;
+}
+
+.movie-genre {
+    margin: 20px 20px 20px 30px;
+    font-size: 100%;
+}
+
+.movie-star {
+    margin: 0 20px;
+    font-size: 100%;
+}
+
+.movie-above {
+    margin: 0 30px 0 30px;
+}
+
+@media only screen and (max-width: 1050px) {
+    .movie-text {
+        width: 100vw;
+        padding: 15px;
+    }
+
+    .movie-title {
+        padding: 0;
+    }
+}
+
+.actor-list {
+    margin: 0 60px;
+}
+
+.actor {
+    width: calc(500 / 1.6 * 1px + 80px);
+    height: auto;
+    margin: 40px;
+}
+
+.actor-poster {
+    width: calc(500 / 2.7 * 1px);
+    height: auto;
+}
+
+.actor-text {
+    font-size: 150%;
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.review-list {
+    display: flex;
+    height: auto;
+    justify-content: center;
+    align-items: flex-start;
+    flex-flow: row wrap;
+}
+
+.review {
+    margin: auto;
+    padding: 15px;
+}
+
+.review-text {
+    font-size: 90% !important;
+}
+
+/*/////////////////////////*/
+/*DEFAULTS*/
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+    color: #0366d6;
+}
+
+/*.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+  width:10px;
+  height:20px;
+}*/
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
+}
