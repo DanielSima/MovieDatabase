@@ -3,7 +3,7 @@
 Client, server application for movies.
 Using Microsoft SQL Server together with .NET Razor pages.
 
-![Video](/video/video.gif)
+![Video](/media/video.gif)
 
 ## Prerequisites
 * Microsoft SQL Server - tested with version 18.3.1
